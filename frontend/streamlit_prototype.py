@@ -12,7 +12,7 @@ st.set_page_config(
     page_title="Webton TopicDiscover",
     layout="wide",
     initial_sidebar_state="expanded",
-    page_icon=":rocket:"
+    page_icon=":rocket:",
 )
 
 # Initiale Templates und Keywords basierend auf der Projektstrategie
@@ -22,7 +22,7 @@ TEMPLATE_OPTIONS = [
     "correct issue",
     "resolve error",
     "debug issue",
-    "troubleshoot problem"
+    "troubleshoot problem",
 ]
 
 INITIAL_KEYWORDS = [
@@ -35,19 +35,20 @@ INITIAL_KEYWORDS = [
     "Windows 11 Update Issues",
     "MacOS Monterey Speed Up",
     "macOS Catalina Wi-Fi Problems",
-    "Office 365 Installation Errors"
+    "Office 365 Installation Errors",
 ]
 
 # Initialize session state for page navigation
-if 'page' not in st.session_state:
+if "page" not in st.session_state:
     st.session_state.page = "Generate Topics"
 
 # Initialize session state for keywords and templates
-if 'additional_templates' not in st.session_state:
+if "additional_templates" not in st.session_state:
     st.session_state.additional_templates = []
 
-if 'additional_keywords' not in st.session_state:
+if "additional_keywords" not in st.session_state:
     st.session_state.additional_keywords = []
+
 
 # Helper Function: Load Markdown File
 def load_markdown(file_path):
@@ -57,12 +58,15 @@ def load_markdown(file_path):
     else:
         return f"Datei nicht gefunden: {file_path}"
 
+
 # Sidebar Navigation mit Full-width Buttons und Icons
 st.sidebar.title("Navigation")
+
 
 # Funktion zur Navigation
 def navigate(page_name):
     st.session_state.page = page_name
+
 
 # Buttons mit voller Breite und Icons
 if st.sidebar.button("🔍 Generate Topics", use_container_width=True):
@@ -89,15 +93,22 @@ if page == "Generate Topics":
             "Choose one or more templates:",
             options=TEMPLATE_OPTIONS + st.session_state.additional_templates,
             default=["fix error code", "solve problem"],
-            help="Wähle die Templates aus, die du für die Generierung der How-To-Themen verwenden möchtest."
+            help="Wähle die Templates aus, die du für die Generierung der How-To-Themen verwenden möchtest.",
         )
         new_template = st.text_input("Add a new template:", "")
         if st.button("Add Template"):
-            if new_template and new_template.strip() not in TEMPLATE_OPTIONS + st.session_state.additional_templates:
+            if (
+                new_template
+                and new_template.strip()
+                not in TEMPLATE_OPTIONS + st.session_state.additional_templates
+            ):
                 st.session_state.additional_templates.append(new_template.strip())
                 st.success(f"Template '{new_template.strip()}' hinzugefügt.")
                 st.experimental_rerun()
-            elif new_template.strip() in TEMPLATE_OPTIONS + st.session_state.additional_templates:
+            elif (
+                new_template.strip()
+                in TEMPLATE_OPTIONS + st.session_state.additional_templates
+            ):
                 st.warning("Dieses Template existiert bereits.")
             else:
                 st.warning("Bitte gib ein gültiges Template ein.")
@@ -108,15 +119,22 @@ if page == "Generate Topics":
             "Choose one or more keywords:",
             options=INITIAL_KEYWORDS + st.session_state.additional_keywords,
             default=["Roblox Error Code 268", "Valorant Error Code 43"],
-            help="Wähle die Keywords aus, für die du How-To-Themen generieren möchtest."
+            help="Wähle die Keywords aus, für die du How-To-Themen generieren möchtest.",
         )
         new_keyword = st.text_input("Add a new keyword:", "")
         if st.button("Add Keyword"):
-            if new_keyword and new_keyword.strip() not in INITIAL_KEYWORDS + st.session_state.additional_keywords:
+            if (
+                new_keyword
+                and new_keyword.strip()
+                not in INITIAL_KEYWORDS + st.session_state.additional_keywords
+            ):
                 st.session_state.additional_keywords.append(new_keyword.strip())
                 st.success(f"Keyword '{new_keyword.strip()}' hinzugefügt.")
                 st.experimental_rerun()
-            elif new_keyword.strip() in INITIAL_KEYWORDS + st.session_state.additional_keywords:
+            elif (
+                new_keyword.strip()
+                in INITIAL_KEYWORDS + st.session_state.additional_keywords
+            ):
                 st.warning("Dieses Keyword existiert bereits.")
             else:
                 st.warning("Bitte gib ein gültiges Keyword ein.")
@@ -126,9 +144,15 @@ if page == "Generate Topics":
         with st.spinner("Fetching topics..."):
             try:
                 # Kombiniere Templates mit Keywords
-                combined_keywords = [f"{template} {keyword}" for template in selected_templates for keyword in selected_keywords]
+                combined_keywords = [
+                    f"{template} {keyword}"
+                    for template in selected_templates
+                    for keyword in selected_keywords
+                ]
                 # Sende die kombinierten Keywords an das Backend als kommaseparierte Zeichenkette
-                response = requests.get(GEN_KEYWORDS_URL, params={"base": ", ".join(combined_keywords)})
+                response = requests.get(
+                    GEN_KEYWORDS_URL, params={"base": ", ".join(combined_keywords)}
+                )
                 if response.status_code == 200:
                     data = response.json()
                     st.success("Topics generated successfully!")
@@ -154,7 +178,10 @@ elif page == "Analyze":
         if st.button("Analyze Trends"):
             with st.spinner("Analyzing trends..."):
                 try:
-                    response = requests.post(ANALYZE_TRENDS_URL, json={"keywords": st.session_state["howto_keywords"]})
+                    response = requests.post(
+                        ANALYZE_TRENDS_URL,
+                        json={"keywords": st.session_state["howto_keywords"]},
+                    )
                     if response.status_code == 200:
                         trends_data = response.json().get("trends", [])
                         if trends_data:
@@ -172,14 +199,24 @@ elif page == "Analyze":
 
                             with col1:
                                 st.write("### Interesse im Zeitverlauf")
-                                st.line_chart(trends_chart_data.drop(columns=["isPartial"], errors="ignore"))
+                                st.line_chart(
+                                    trends_chart_data.drop(
+                                        columns=["isPartial"], errors="ignore"
+                                    )
+                                )
 
                             with col2:
                                 st.write("### Top Keywords nach Interesse")
                                 # Nur numerische Spalten auswählen
-                                trends_numeric = trends_df.drop(columns=["isPartial"], errors="ignore").select_dtypes(include=['float64', 'int64'])
+                                trends_numeric = trends_df.drop(
+                                    columns=["isPartial"], errors="ignore"
+                                ).select_dtypes(include=["float64", "int64"])
                                 # Mittelwerte berechnen und sortieren
-                                top_keywords = trends_numeric.mean().sort_values(ascending=False).head(10)
+                                top_keywords = (
+                                    trends_numeric.mean()
+                                    .sort_values(ascending=False)
+                                    .head(10)
+                                )
                                 st.table(top_keywords)
                         else:
                             st.warning("Keine Trenddaten verfügbar.")
@@ -205,9 +242,15 @@ elif page == "Documentation":
         # Standard-Dokumentationsdatei auswählen (z.B. Einleitung)
         default_doc = "einleitung.md"
         if default_doc in markdown_files:
-            selected_file = st.selectbox("Wähle eine Dokumentationsdatei", markdown_files, index=markdown_files.index(default_doc))
+            selected_file = st.selectbox(
+                "Wähle eine Dokumentationsdatei",
+                markdown_files,
+                index=markdown_files.index(default_doc),
+            )
         else:
-            selected_file = st.selectbox("Wähle eine Dokumentationsdatei", markdown_files)
+            selected_file = st.selectbox(
+                "Wähle eine Dokumentationsdatei", markdown_files
+            )
 
         if selected_file:
             st.markdown("""---""")

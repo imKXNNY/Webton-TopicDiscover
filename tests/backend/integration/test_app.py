@@ -5,6 +5,7 @@ def test_api_topics(client, mocker):
     assert response.status_code == 200
     assert response.json["data"] == ["topic1", "topic2"]
 
+
 def test_api_error_handling(client, mocker):
     mocker.patch("app.find_uncovered_topics", side_effect=Exception("Test Error"))
     response = client.get("/api/topics")
