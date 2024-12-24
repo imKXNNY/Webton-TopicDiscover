@@ -1,0 +1,9 @@
+# for tests & test-coverage
+.pytest_cache
+htmlcov
+
+# for python package cache
+__pycache__
+
+# for environment variables
+.env

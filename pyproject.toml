@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "webton-topicdiscover"
+version = "0.1.0"
+description = "Webton TopicDiscover is a tool designed to identify high-demand, low-competition topics for YouTube content creation. By leveraging Google Trends and YouTube Data API, it helps uncover trending business-related keywords that lack video content, enabling creators to fill untapped gaps in the market."
+authors = ["imKXNNY <kenny.gueclue@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.1.0"
+pytrends = "^4.9.2"
+google-api-python-client = "^2.156.0"
+python-dotenv = "^1.0.1"
+pandas = "^2.2.3"
+streamlit = "^1.41.1"
+flask-cors = "^5.0.0"
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+pre-commit = "^4.0.1"
+pytest-cov = "^6.0.0"
+bs4 = "^0.0.2"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+
+[tool.pytest.ini_options]
+addopts = "--cov=backend --cov-report=html"
+testpaths = ["tests/backend"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
